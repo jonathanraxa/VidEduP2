@@ -10,8 +10,7 @@ const VideoList = (props) => {
       onVideoSelect = {props.onVideoSelect}
       key={video.etag}
       video={video} />
-
-  );
+    );
   });
 
   // return the HTML

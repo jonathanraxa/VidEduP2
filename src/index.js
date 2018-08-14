@@ -2,11 +2,13 @@ import _ from 'lodash';
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import YTSearch from 'youtube-api-search';
+import YouTube from 'react-youtube';
 import SearchBar from './components/search_bar';
 import VideoList from './components/video_list';
 import VideoDetail from './components/video_detail';
 import {TextArea} from './components/text_area';
-import {Footer} from './components/el_footer.js';
+import {Footer} from './components/footer.js';
+
 
 const API_KEY = 'AIzaSyDIFdRyeBUCoxI3QNrimE9y2GXu3PAWoaA';
 
@@ -27,8 +29,14 @@ class App extends Component {
     };
 
     this.videoSearch('skateboards')
-
   }
+
+
+    _onReady(event) {
+      // access to player in all event handlers via event.target
+      event.target.pauseVideo();
+    }
+
 
   videoSearch(term){
     YTSearch({key: API_KEY, term: term}, (videos) => {
@@ -43,6 +51,14 @@ class App extends Component {
 
 
   render(){
+
+    const opts = {
+      height: '390',
+      width: '640',
+      playerVars: { // https://developers.google.com/youtube/player_parameters
+        autoplay: 1
+      }
+    };
 
     // only called every 300 milliseconds
     // throttling user input (google instance search - kinda)
@@ -63,7 +79,10 @@ class App extends Component {
         <div className="row">
           <VideoList
             onVideoSelect= {selectedVideo => this.setState( {selectedVideo}) }
-            videos={this.state.videos} />
+            videos={this.state.videos}
+            opts={opts}
+            onReady={this._onReady}
+            />
         </div>
 
           <br />

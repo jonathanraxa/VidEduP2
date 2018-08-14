@@ -3,21 +3,17 @@ import {ExportPDF} from './text_to_pdf';
 import { Editor } from '@tinymce/tinymce-react';
 import {VideoDetail} from './video_detail';
 
+let textContent;
 
-export class TextArea extends Component{
+export class TextArea extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
-    const textAreaContent = "hello";
+    this.state = {
+      textContent: null,
+    };
   }
 
-  componentWillMount() {
-    document.addEventListener("keydown", this.onKeyPressed.bind(this));
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.onKeyPressed.bind(this));
-  }
   textAreaContent(props){
     const dope = "hello";
   }
@@ -26,35 +22,45 @@ export class TextArea extends Component{
     if(args.keyCode > 65 && args.keyCode < 90){ // all other key handler
       // player.pauseVideo();
     } else if (args.keyCode == 13){ // return key handler
-      console.log("woopidy");
+    // player.resumeVideo();
     }
-   }
+  }
 
- youTubeIframeAPIReady() {
-   player = new YT.Player('player', {
-       height: '390',
-       width: '640',
-       videoId: video_id
-   });
-}
+  getContent(){
+    console.log("textContent: " + textContent);
+    this.setState({textContent: tinyMCE.activeEditor.getContent({format : 'text'})});
 
-   // content = tinyMCE.activeEditor.getContent();
+    console.log("textContent: " + textContent);
+    download("VidEdu",textContent);
+  }
+
   render(){
+
     return (
-
       <div className="col-md-4 textArea">
-
           <Editor
             apiKey='8rp4hn347wu0de5xdlo0m1desvvv52rfiyifi05ish51xzdg'
-            initialValue="{video.snippet.title}"
+            initialValue="TITLE: {video.snippet.title}"
+            selector="textarea"
+            theme="modern"
+            id="tinyMCE"
             init={{
-               plugins: 'link image code',
+               plugins: 'link code',
                toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code',
              }}
-             onKeyDown={this.onKeyPressed} />
+             onKeyDown={this.onKeyPressed}
+            />
          <br />
-         <ExportPDF onClick="this.props.textAreaContent"/>
+
+         <ExportPDF
+           videoTitle={"hi"}
+           click={this.getContent}
+          />
+
       </div>
     ); // end return
+
+
   } // end render
+
 }
